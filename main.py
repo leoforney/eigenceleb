@@ -11,6 +11,8 @@ if not os.path.exists('cropped'):
     os.makedirs('cropped')
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+print(device)
+
 mtcnn = MTCNN(keep_all=True, device=device)
 
 size = (224, 224)
@@ -37,7 +39,7 @@ def crop_and_save_faces(input_dir='faces', output_dir='cropped', output_size=(22
         else:
             print(f"No face detected in {img_name}.")
 
-crop_and_save_faces(output_size = size)
+#crop_and_save_faces(output_size = size)
 
 def load_and_vectorize_images(directory='cropped'):
     image_vectors = []
@@ -62,7 +64,7 @@ from sklearn.decomposition import PCA
 centered_vectors = image_vectors - mean_face_vector
 
 # Fit PCA
-n_components = min(len(image_vectors), 50)  # Choose 50 or the number of images, whichever is smaller
+n_components = len(image_vectors)
 pca = PCA(n_components=n_components, whiten=True)
 pca.fit(centered_vectors)
 
@@ -74,3 +76,5 @@ from matplotlib import pyplot as plt
 plt.imshow(mean_face_image, cmap='gray')
 plt.title("Average Face")
 plt.show()
+
+plt.imsave('eigenface.jpg', eigenfaces[0])
